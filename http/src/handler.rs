@@ -14,6 +14,8 @@ use server_utils::cors;
 
 use {utils, RequestMiddleware, RequestMiddlewareAction, CorsDomains, AllowedHosts};
 
+const APPLICATION_JSON_UTF_8: &str = "application/json; charset=utf-8";
+
 /// jsonrpc http request handler.
 pub struct ServerHandler<M: Metadata = (), S: Middleware<M> = NoopMiddleware> {
 	jsonrpc_handler: Rpc<M, S>,
@@ -311,7 +313,8 @@ impl<M: Metadata, S: Middleware<M>> RpcHandler<M, S> {
 
 	fn is_json(content_type: Option<&header::ContentType>) -> bool {
 		match content_type {
-			Some(&header::ContentType(ref mime)) if *mime == mime::APPLICATION_JSON => true,
+			Some(&header::ContentType(ref mime))
+                if *mime == mime::APPLICATION_JSON || *mime == APPLICATION_JSON_UTF_8 => true,
 			_ => false
 		}
 	}
